@@ -1,0 +1,38 @@
+---
+
+- hosts: router_a
+  gather_facts: no
+  connection: local
+
+  tasks:
+
+   - name: OBTAIN LOGIN INFORMATION
+     include_vars: secrets.yml
+
+   - name: DEFINE PROVIDER
+     set_fact:
+       provider:
+         host: "{{ ansible_host }}"
+         username: "{{ creds['username'] }}"
+         password: "{{ creds['password'] }}"
+         auth_pass: "{{ creds['auth_pass'] }}"
+
+   - name: SET IP ADDRESS
+     ios_config:
+       provider: "{{ provider }}"
+       authorize: yes
+       parents: "interface FastEthernet0/1"
+       lines:
+         - description SOUTH-CUSTOMER
+         - ip address 10.10.20.1 255.255.255.248
+         - ipv6 address 2001:db8:2001::9/64
+         - no shutdown
+
+   - name: SAVE & BACKUP CONFIGURATION
+     ios_config:
+       provider: "{{ provider }}"
+       authorize: yes
+       save: yes
+       backup: yes
+
+
