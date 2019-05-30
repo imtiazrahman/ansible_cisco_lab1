@@ -1,2 +1,2 @@
 [IOS]
-router_a ansible_host=192.168.45.10
+router_a ansible_host=<YOUR_ROUTER_MGMT_IP_ADDRESS>
